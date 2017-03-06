@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pictionnaire">
+
+<head>
+
+    <title>Pictionnaire</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!--<style>
+        body {
+            padding-top: 70px;
+            /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        }
+    </style> -->
+
+    <!-- inclure un fichier js -->
+    <script type="text/javascript" src="vendor/angular/angular.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+
+    <!-- for upload file -->
+    <script type="text/javascript" src="js/ng-file-upload-shim.min.js"></script>
+    <script type="text/javascript" src="js/ng-file-upload.min.js"></script>
+
+
+
+</head>
+
+<body ng-controller="tabController as tbCtrl">
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" ng-click="tbCtrl.selectTab(1)" ng-class="{active:tbCtrl.tabSelected(1)}">
+                    <img class="img-responsive" src="pictures/pictionnaire.png">
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+                <ul class="nav navbar-nav" style="float: right;">
+                    <li>
+                        <a ng-click="tbCtrl.selectTab(1)" ng-class="{active:tbCtrl.tabSelected(1)}" id="tabAccueil">Accueil</a>
+                    </li>
+                    <li>
+                        <a ng-click="tbCtrl.selectTab(2)" ng-class="{active:tbCtrl.tabSelected(2)}" id="tabDico">Dictionnaire</a>
+                    </li>
+                    <li>
+                        <a ng-click="tbCtrl.selectTab(3)" ng-class="{active:tbCtrl.tabSelected(3)}" id="tabAjouter">Ajouter un picto</a>
+                    </li>
+                    <li>
+                        <a ng-click="tbCtrl.selectTab(4)" ng-class="{active:tbCtrl.tabSelected(4)}" id="tabInfos">Infos</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <hr class="seperator" />
+    <div ng-controller="listController as lCtrl">
+
+        <!-- Page Accueil -->
+        <div ng-show="tbCtrl.tabSelected(1)">
+            <!-- Page Content -->
+
+
+            <div class="jumbotron vertical-center">
+                <div class="container">
+                    <center>
+                        <p> Pictionnaire est un site dédié à la transcription de mots en pictogrammes. Ces images simplifiées sont destinées à aider les personnes ayant des difficultés à communiquer.</p>
+                    </center>
+
+                </div>
+                <!-- /.row -->
+            </div>
+
+            <div class="container " ng-controller="listController as lCtrl">
+                <div class="jumbotron vertical-center">
+
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3 text-center">
+                            <label for="word">Veuillez entrer un mot</label>
+                            <div class="input-group default-input-group ">
+                                <input type="text" class="form-control" placeholder="Tapez le mot ici !" ng-model="search.$">
+                                <form class="input-group-btn">
+                                    <input ng-click="onClick=true" class="btn btn-primary" type="button" value="Afficher">
+                                    <input type="reset" ng-click="onClick=false" class="btn btn-primary" value="Recommencer">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /input-group -->
+                    <br/>
+
+                    <div ng-show="onClick" class="pictos-container">
+                        <div ng-repeat="picto in lCtrl.pictos | filter: search | limitTo : 4">
+                            <div class="img-responsive img-picto-container" ng-style=" {'border-color' : lCtrl.categories[picto.categorie -1].couleur}">
+                                <img class="img-picto" src="{{ picto.url }}" /><br />
+                                <div class="nom-picto">
+                                    {{picto.nom}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+
+            <div class="jumbotron vertical-center">
+            </div>
+
+        </div>
+
+
+        <!-- Page Dictionnaire -->
+        <div ng-show="tbCtrl.tabSelected(2)">
+            <!-- Page Content -->
+            <div class="container">
+                <div class="jumbotron vertical-center">
+                    <div class="filter-container">
+
+                        <h2> Filtres </h2>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                Catégories :
+                                <select ng-model="lCtrl.filter" ng-options="item.id as item.name for item in lCtrl.categories">
+                        <option value="">Tous</option>
+                        </select>
+                            </div>
+                            <div ng-hide=" (!!lCtrl.filter || undefined) " class="col-md-4">
+                                Classé par :
+                                <select data-style="btn-info" ng-model="lCtrl.scdFilter">
+                      <option value = "1" >Catégories</option>
+                      <option value = "2" >Alphabétique</option>
+                    </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pictos-container">
+                        <div ng-repeat="picto in lCtrl.pictos | filter: (!!lCtrl.filter || undefined) && lCtrl.filter :true | orderBy:((lCtrl.scdFilter == 2)?'nom':'')">
+                            <div class="img-responsive img-picto-container" ng-style=" {'border-color' : lCtrl.categories[picto.categorie -1].couleur}">
+                                <img class="img-picto" src="{{ picto.url }}" /><br />
+                                <div class="nom-picto">
+                                    {{picto.nom}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Page Ajouter picto -->
+        <div ng-show="tbCtrl.tabSelected(3)">
+            <!-- Page Content -->
+            <div class="container" ng-controller="MyCtrl">
+                <div class="jumbotron vertical-center">
+                    <!-- <form method="post" action="reception.php" enctype="multipart/form-data" class="col-md-4">
+                        <label for="mon_fichier">Fichier (tous formats | max. 1 Mo) :</label><br />
+                        <input type="hidden" name="MAX_FILE_SIZE" value="1048576" />
+                        <input type="file" name="mon_fichier" id="mon_fichier" class="btn btn-primary" /><br />
+                        <label for="titre">Nom du pictogramme (max. 50 caractères) :</label><br />
+                        <input type="text" name="titre" class="form-control" placeholder="Tapez le nom ici !"><br />
+                        <label for="categorie">Séléctionner la catégorie correspondante :</label>
+                        <select ng-model="lCtrl.filter" ng-options="item.id as item.name for item in lCtrl.categories">
+                         <option value="">...</option>
+                       </select> <br> <br>
+                        <button type="submt" name="submit" class="btn btn-primary" ng-click="">Valider</button>
+                        <input type="reset" value="Recommencer" class="btn btn-primary">
+                    </form> -->
+
+                    <form name="myForm">
+                        <fieldset>
+                            <legend>Upload on form submit</legend>
+                            Username:
+                            <input type="text" name="userName" ng-model="username" size="31" required>
+                            <i ng-show="myForm.userName.$error.required">*required</i>
+                            <br>Photo:
+                            <input type="file" ngf-select ng-model="picFile" name="file" accept="image/*" ngf-max-size="2MB" required ngf-model-invalid="errorFile">
+                            <i ng-show="myForm.file.$error.required">*required</i><br>
+                            <i ng-show="myForm.file.$error.maxSize">File too large {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
+                            <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb"> <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+                            <br>
+                            <button ng-disabled="!myForm.$valid" ng-submit="uploadPic(picFile)">Submit</button>
+                            <span class="progress" ng-show="picFile.progress >= 0">
+                              <div style="width:{{picFile.progress}}%" ng-bind="picFile.progress + '%'"></div>
+                            </span>
+                            <span ng-show="picFile.result">Upload Successful</span>
+                            <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+                        </fieldset>
+                        <br>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Page infos -->
+        <div ng-show="tbCtrl.tabSelected(4)" class="tab_cont">
+            <!-- Page Content -->
+            <div class="container">
+                <div class="jumbotron vertical-center">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis id tortor sed leo venenatis consectetur. Cras maximus ac felis sed consequat. In lobortis maximus risus, at convallis felis aliquam non. Suspendisse lobortis leo vitae libero
+                        tristique posuere. Aliquam a tempus lectus. Integer aliquet risus et egestas congue. Vestibulum commodo justo in tempus elementum. Nunc non dolor semper purus rutrum sagittis et non ante. Pellentesque sed congue ante. Proin convallis
+                        mauris velit, non viverra enim placerat quis. </p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <hr class="seperator" />
+
+</body>
+
+</html>
