@@ -219,11 +219,12 @@
                         tristique posuere. Aliquam a tempus lectus. Integer aliquet risus et egestas congue. Vestibulum commodo justo in tempus elementum. Nunc non dolor semper purus rutrum sagittis et non ante. Pellentesque sed congue ante. Proin convallis
                         mauris velit, non viverra enim placerat quis. </p>
                 </div>
-                <form action="mailto:oranetardits@hotmail.fr" method="post" name="contact">
-                  <input type="text" name="nom" value="Nom et Prénom" class="form-control">
-                  <input type="text" name="mail" value="Email"class="form-control">
-                  <textarea name="text" rows="2" cols="20" class="form-control">Un avis, une question...</textarea>
-                    <input type="submit" value="envoyer"></form>
+                <form action="mailto:oranetardits@hotmail.fr" method="POST" name="contact" enctype="multipart/form-data">
+                    <input type="text" name="nom" value="Nom et Prénom" class="form-control">
+                    <input type="text" name="mail" value="Email" class="form-control">
+                    <textarea name="text" rows="2" cols="20" class="form-control">Un avis, une question...</textarea>
+                    <input type="submit" value="Envoyer" class="btn btn-primary">
+                  </form>
             </div>
         </div>
 
